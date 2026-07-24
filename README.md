@@ -1,6 +1,6 @@
 ### Goals
  - What problem am I solving?
-	 Too many password to remember. Need a solution to store passwords.
+	 Too many password to remember. Need a solution to store passwords
  - Who is the user?
 	 Someone who is familiar with terminal. 
  - Why would someone use this?
@@ -26,6 +26,11 @@
 These describe qualities.
 - Offline
 - Single user
+- password manager
+- Windows CLI
+- SQ Lite
+- Master password
+- Recovery key
 
 ### Data Model
 Define the application's entities, their attributes, relationships, and constraints.
@@ -41,36 +46,99 @@ Define the application's entities, their attributes, relationships, and constrai
 	- Save on exit
 
 ### High-Level Design (Architecture)
-- Components 
-	- What are the major parts of the system?
-- Responsibility 
-	- What is each component responsible for?
-- Communication 
-	- Who can communicate with whom?
-- External Systems 
-	- What external services or software does the system depend on? 
-- Constraints 
-	- What architectural constraints must the system satisfy?
+User -> CLI -> Command Dispatcher -> Auth/Vault/Generator -> Repository -> SQLite DB
+
+
+### File structure:
+
+src/
+    main.c
+    cli.c
+	dispatcher.c
+    auth.c
+    vault.c
+    repository.c
+    crypto.c
+    database.c
+include/
+    cli.h
+	dispatcher.h
+	auth.h
+	vault.h
+	database.h
+	repository.h
+	crypto.h
+	models.h
+crypton.db
+
+### db design
+
+VAULT_ENTRIES
+  id
+  site
+  username
+  password
+  notes
+  updated_at
+  created_at
+
+APP_METADATA
+ master_password_hash
+ recovery_key_hash
+ updated_at
+ created_at
+
+ 
 
 ### Module Design
-For each module:
+1. main.c
 
-1. Responsibility
-   - What is this module responsible for?
-1. Owned Data
-   - What data does this module own and manage?
-1. Public API
-   - What operations does it expose to other modules?
-1. Dependencies
-   - Which other modules does it depend on?
-### Algorithms & Data Structures
+Responsibility:-
+ entry point of program.
+ starting of application.
+ handovering to CLI.
+ handling the Exit.
 
-- Data structures
-- Search
-- Sorting
-- Parsing
-- Indexing
-- Complexity
+ functions:- 
+
+ int main(void);
+
+2. cli.c
+
+Responsibility:-
+interacting to user.
+
+this file will only handle i/o.
+
+  Welcome screen
+  Login prompt
+  Command prompt
+  User input
+  Output print
+
+functions:-
+
+void start_cli(void);
+
+void show_welcome(void);
+
+void show_shell(void);
+
+void read_command(char *buffer);
+
+3. dispatcher.c
+
+Responsibility:-
+
+identifying the command and sending to correct module.
+
+user -> add -> dispatcher -> vault_add()
+
+functions:-
+
+void dispatch_command(const char *command);
+
+
 ### Performance
 
 - Expected dataset size
