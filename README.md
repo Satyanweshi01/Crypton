@@ -19,6 +19,8 @@
 - Nice-to-have features
 	- Password generation
 	- Import Export
+	- Recovery key
+	- Password history (to avoid rewrite previous password)
 - Features intentionally postponed
 - Project boundaries
  
@@ -46,7 +48,7 @@ Define the application's entities, their attributes, relationships, and constrai
 	- Save on exit
 
 ### High-Level Design (Architecture)
-User -> CLI -> Command Dispatcher -> Auth/Vault/Generator -> Repository -> SQLite DB
+User -> CLI -> Command Parser -> Auth/Vault/Generator(Business logic) -> CRUD C layer -> SQLite DB
 
 
 ### File structure:
@@ -54,7 +56,7 @@ User -> CLI -> Command Dispatcher -> Auth/Vault/Generator -> Repository -> SQLit
 src/
     main.c
     cli.c
-	dispatcher.c
+	parser.c
     auth.c
     vault.c
     repository.c
@@ -75,7 +77,7 @@ crypton.db
 
 VAULT_ENTRIES
   id
-  site
+  service
   username
   password
   notes
@@ -84,7 +86,6 @@ VAULT_ENTRIES
 
 APP_METADATA
  master_password_hash
- recovery_key_hash
  updated_at
  created_at
 
@@ -126,17 +127,17 @@ void show_shell(void);
 
 void read_command(char *buffer);
 
-3. dispatcher.c
+3. parser.c
 
 Responsibility:-
 
 identifying the command and sending to correct module.
 
-user -> add -> dispatcher -> vault_add()
+user -> add -> parser -> vault_add()
 
 functions:-
 
-void dispatch_command(const char *command);
+void parser_command(const char *command);
 
 4. auth.c
 Responsibility:-
