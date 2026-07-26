@@ -1,8 +1,9 @@
-### Tasks
+### Tasks 
  - [ ] database -> rupak 
- - [ ] cli -> ankita
+ - [ ] cli, crpyto -> ankita
  - [ ] repository -> prolay
  - [ ] parser -> sankhadeep
+**DEADLINE:** 28.07.2026 10:00 am
 
 ### Goals
  - What problem am I solving?
