@@ -2,7 +2,7 @@
  - [ ] database -> rupak 
  - [ ] cli, crpyto -> ankita
  - [ ] repository -> prolay
- - [ ] parser -> sankhadeep
+ - [ ] parser -> sankhadigop
 **DEADLINE:** 28.07.2026 10:00 am
 
 ### Goals
