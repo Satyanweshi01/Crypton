@@ -1,5 +1,8 @@
 ### Tasks
- - [ ] create 
+ - [ ] database -> rupak 
+ - [ ] cli -> ankita
+ - [ ] repository -> prolay
+ - [ ] parser -> sankhadeep
 
 ### Goals
  - What problem am I solving?
