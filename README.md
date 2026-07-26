@@ -1,3 +1,6 @@
+### Tasks
+ - [ ] create 
+
 ### Goals
  - What problem am I solving?
 	 Too many password to remember. Need a solution to store passwords
@@ -64,13 +67,13 @@ src/
     database.c
 include/
     cli.h
-	dispatcher.h
+	parser.h
 	auth.h
 	vault.h
-	database.h
 	repository.h
 	crypto.h
-	models.h
+	database.h
+	models.h -> data model
 crypton.db
 
 ### db design
