@@ -20,6 +20,12 @@ typedef struct
 
 typedef struct
 {
+    VaultEntry *items;
+    int count;
+} VaultEntryList;
+
+typedef struct
+{
     char master_password_hash[50];
     date updated_at;
     date created_at;
