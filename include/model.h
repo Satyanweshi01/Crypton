@@ -1,4 +1,5 @@
-
+#ifndef MODEL_H
+#define MODEL_H
 typedef struct date_data
 {
     int day;
@@ -23,3 +24,5 @@ typedef struct
    date updated_at
    date created_at
 } AppMetadata;
+
+#endif
