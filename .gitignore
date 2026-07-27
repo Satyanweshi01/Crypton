@@ -17,7 +17,6 @@
 # Compiled Libraries (Static & Dynamic)
 # ==========================================
 *.lib
-*.a
 *.la
 *.lai
 *.lo
