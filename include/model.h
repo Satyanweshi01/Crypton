@@ -1,0 +1,25 @@
+
+typedef struct date_data
+{
+    int day;
+    int month;
+    int year;
+} date;
+
+typedef struct 
+{
+    int id;
+    char service[50];
+    char username[50];
+    char password[50];
+    char notes[200];
+    date updated_at
+    date created_at
+} VaultEntry;
+
+typedef struct
+{
+   master_password_hash
+   date updated_at
+   date created_at
+} AppMetadata;

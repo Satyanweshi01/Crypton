@@ -251,8 +251,13 @@ Defines shared data structures used throughout the application.
 Represents database entities as C structures.
 Provides a common interface for data exchange between modules.
 
-functions:-
-
+structure:-
+typedef struct date_data
+{
+    int day;
+    int month;
+    int year;
+} date;
 typedef struct
 {
     ...
@@ -285,14 +290,11 @@ typedef struct
 - Input validation
 ### Deployment
 
-- Build process
-- Packaging
-- Installation
-- Updates
+- CMAKE for executable
+
 
 ### Technology Decisions
-- Programming language
-- Framework
-- Database
-- Libraries
-- Build system
+- Programming language - C
+- Database - SQLite
+- Libraries - string
+
