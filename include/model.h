@@ -2,18 +2,22 @@
 #define MODEL_H
 typedef struct date_data
 {
-    int day;
-    int month;
     int year;
+    int month;
+    int day;
+
+    int hour;
+    int minute;
+    int second;
 } date;
 
 typedef struct
 {
     int id;
-    char service[50];
-    char username[50];
-    char password[50];
-    char notes[200];
+    char service[100];
+    char username[100];
+    char password[256];
+    char notes[500];
     date updated_at;
     date created_at;
 } VaultEntry;
@@ -27,6 +31,8 @@ typedef struct
 typedef struct
 {
     char master_password_hash[50];
+    char master_password_hash[128];
+    char recovery_key_hash[128];
     date updated_at;
     date created_at;
 } AppMetadata;
