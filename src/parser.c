@@ -13,13 +13,38 @@ CommandHandler handler;
 }Command;
 
 static const Command command_table[] =
-{{"add", cli_add},
-{"list", cli_list},
-{"get",  cli_get},
-{"update", cli_update},
-{"delete", cli_delete},
-{"generate", cli_generate},
+{
+{"add",         cli_add},
+{"list",        cli_list},
+{"get",         cli_get},
+{"update",      cli_update},
+{"delete",      cli_delete},
+{"generate",    cli_generate},
 };
 
-#define COMMAND_COUNT(sizeof(command_table) / sizeof(command_table[0]))
+#define COMMAND_COUNT (sizeof (command_table) / sizeof(command_table[0]))
+
+void parse_command(const char*input)
+
+{
+    if(input == NULL)
+    return;
+
+    if(strcmp(input , "exit") == 0)
+    {
+        printf("Exiting Crypton...\n");
+        exit(EXIT_SUCCESS);
+    }
+
+    for(size_t i = 0 ; i < COMMAND_COUNT; i++)
+    {
+        if (strcmp(input , command_table[i].command) == 0)
+        {
+            command_table[i].handler();
+            return;
+        }
+    }
+
+    printf("Unknown command : %s\n" , input);
+}
 
