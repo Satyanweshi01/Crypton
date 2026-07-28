@@ -17,4 +17,4 @@ VaultEntry get_entry_by_id(int id , VaultEntry *entry);
 
 int find_entries_by_service(const char *service, VaultEntry results[], int max_results);
 
-int get_all_entries(VaultEntry results[]);
+VaultEntryList get_all_entries(void);
