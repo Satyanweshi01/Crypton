@@ -1,11 +1,11 @@
 ### Tasks
 
-- [ ] database -> rupak
-- [ ] cli, crpyto -> ankita
+- [x] database -> rupak
+- [x] cli, crpyto -> ankita
 - [ ] repository -> prolay
 - [ ] parser -> sankhadigop
       **DEADLINE:** 28.07.2026 10:00 am
-
+- [ ] vault -> rupak
 ### Goals
 
 - What problem am I solving?
