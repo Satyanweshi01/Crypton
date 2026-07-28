@@ -11,8 +11,8 @@ bool update_entry(VaultEntry *entry);
 
 bool delete_entry(int id);
 
-VaultEntry get_entry_by_id(int id , VaultEntry *entry);
+bool get_entry_by_id(int id , VaultEntry *entry);
 
-int find_entries_by_site(const char *site, VaultEntry results[]);
+int find_entries_by_service(const char *service, VaultEntry results[], int max_results);
 
-int get_all_entries(VaultEntry results[]);
+int get_all_entries(VaultEntry results[] , int max_results);
