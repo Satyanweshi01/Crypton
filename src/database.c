@@ -98,7 +98,7 @@ int create_table()
 // Parameters:
 // - entry: A VaultEntry struct containing the data to be inserted into the table.
 // Returns 1 on success, 0 on failure
-int add_entry(VaultEntry entry)
+int add_vault_entry(VaultEntry entry)
 {
     // Format the query string with the values from the VaultEntry struct
     char query[MAX_QUERY_LENGTH];
@@ -136,9 +136,70 @@ int add_entry(VaultEntry entry)
     }
 }
 
+int update_vault_entry(VaultEntry entry)
+{
+    char query[MAX_QUERY_LENGTH];
+
+    const char *fmt = "UPDATE vault_entries"
+                      "SET service = '%s', username = '%s', password = '%s', notes = '%s', updated_at = '%02d-%02d-%04d', created_at = '%02d-%02d-%04d'"
+                      "WHERE service = '%s';";
+
+    snprintf(query, sizeof(query), fmt,
+             entry.service,
+             entry.username,
+             entry.password,
+             entry.notes,
+             entry.updated_at.day,
+             entry.updated_at.month,
+             entry.updated_at.year,
+             entry.created_at.day,
+             entry.created_at.month,
+             entry.created_at.year,
+             entry.service);
+
+    rc = sqlite3_exec(db, query, callback, 0, &errMSG);
+
+    if (rc != SQLITE_OK)
+    {
+        fprintf(stderr, "SQL error: %s\n", errMSG);
+        sqlite3_free(errMSG);
+        return 0;
+    }
+    else
+    {
+        fprintf(stdout, "Entry updated successfully\n");
+        return 1;
+    }
+}
+
+int delete_vault_entry(char *service)
+{
+    char query[MAX_QUERY_LENGTH];
+
+    const char *fmt = "DELETE FROM vault_entries"
+                      "WHERE service = '%s';";
+
+    snprintf(query, sizeof(query), fmt, service);
+
+    rc = sqlite3_exec(db, query, callback, 0, &errMSG);
+
+    if (rc != SQLITE_OK)
+    {
+        fprintf(stderr, "SQL error: %s\n", errMSG);
+        sqlite3_free(errMSG);
+        return 0;
+    }
+    else
+    {
+        fprintf(stdout, "Entry deleted successfully\n");
+        return 1;
+    }
+}
+
 // Retrieve all entries from the vault_entries table
 // Returns a VaultEntryList struct containing an array of VaultEntry structs and the count of entries retrieved.
-VaultEntryList get_all_entries()
+// Returns NULL if table is empty
+VaultEntryList get_all_vault_entries()
 {
     VaultEntryList entryList;
     entryList.items = NULL;
