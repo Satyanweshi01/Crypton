@@ -30,7 +30,6 @@ typedef struct
 
 typedef struct
 {
-    char master_password_hash[50];
     char master_password_hash[128];
     char recovery_key_hash[128];
     date updated_at;

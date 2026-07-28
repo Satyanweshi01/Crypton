@@ -210,8 +210,6 @@ bool delete_entry(int id);
 
 VaultEntry get_entry_by_id(int id);
 
-int find_entries_by_site(const char \*site, VaultEntry results[]);
-
 int get_all_entries(VaultEntry results[]);
 
 7. database.c
