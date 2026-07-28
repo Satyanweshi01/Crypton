@@ -6,6 +6,7 @@
 - [ ] parser -> sankhadigop
       **DEADLINE:** 28.07.2026 10:00 am
 - [ ] vault -> rupak
+
 ### Goals
 
 - What problem am I solving?
@@ -173,28 +174,7 @@ bool verify_master_password(const char \*password);
 
 bool verify_recovery_key(const char \*key);
 
-5. vault.c
-   Responsibility:-
-   Implements the core business logic of the password manager.
-   Handles password entry operations such as add, retrieve, update, delete, and list.
-   Coordinates with the repository layer for data persistence.
-   Uses the crypto module for encryption and decryption.
-
-functions:-
-
-void add_entry(void);
-
-void list_entries(void);
-
-void get_entry(void);
-
-void update_entry(void);
-
-void delete_entry(void);
-
-void generate_password(void);
-
-6. repository.c
+5. repository.c
    Responsibility:-
    Acts as the data access layer between the application and the database.
    Performs CRUD (Create, Read, Update, Delete) operations.
@@ -206,13 +186,15 @@ bool save_entry(VaultEntry \*entry);
 
 bool update_entry(VaultEntry \*entry);
 
-bool delete_entry(int id);
+bool delete_entry(char \*service);
 
-VaultEntry get_entry_by_id(int id);
+VaultEntry get_entry_by_service(char \*service);
 
-int get_all_entries(VaultEntry results[]);
+int find_entries_by_site(const char \*service, VaultEntryList results);
 
-7. database.c
+int get_all_entries(VaultEntryList results);
+
+6. database.c
    Responsibility:-
    Manages SQLite database connections.
    Initializes the database.
@@ -232,7 +214,7 @@ VaultEntryList get_all_entries();
 
 int close_database();
 
-8. crypto.c
+7. crypto.c
    Responsibility:-
 
 Provides cryptographic services for the application.
@@ -252,7 +234,7 @@ void decrypt(...);
 
 void generate_random_password(...);
 
-9. models.h
+8. models.h
    Responsibility:-
    Defines shared data structures used throughout the application.
    Represents database entities as C structures.
