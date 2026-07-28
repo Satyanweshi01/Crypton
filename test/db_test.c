@@ -9,11 +9,11 @@ int main()
         return 1;
 
     VaultEntry test = {1, "GitHub", "user", "pass", "notes", {27, 7, 2026}, {27, 7, 2026}};
-    add_entry(test);
+    add_vault_entry(test);
     VaultEntry test1 = {2, "Instagram", "user", "suor", "another notes", {20, 7, 2026}, {20, 7, 2026}};
-    add_entry(test1);
+    add_vault_entry(test1);
 
-    VaultEntryList list = get_all_entries();
+    VaultEntryList list = get_all_vault_entries();
 
     for (int i = 0; i < list.count; i++)
     {
@@ -33,6 +33,8 @@ int main()
     }
 
     printf("Retrieved %d entries\n", list.count);
+
+    VaultEntry test2;
 
     close_database();
 

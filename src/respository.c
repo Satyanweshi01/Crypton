@@ -1,18 +1,53 @@
 #include <stdbool.h>
 #include <stdio.h>
+#include "../include/sqlite3.h"
 #include "../include/repository.h"
+#include "../include/model.h"
+#include "../include/database.h"
 
-
-bool save_entry(VaultEntry *entry)
+bool save_entry(VaultEntry entry)
 {
-    open_database();
-    char *query = "INSERT INTO vault_entries ("
-                        "service, username, password,"
-                        "notes, updated_at, created_at)"
-                        "VALUES('entry->service','entry->username'," 
-                        "'entry->password', 'entry->notes'," 
-                        "'entry->updated_at', 'entry->created_at');"
-                        ;
-    sqlite3_stmt *obj = sqlite3_prepare_v2(db,query,)
+    if (!open_database())
+        return false;
 
+    if (!add_entry(entry))
+        return false;
+
+    if (!close_database())
+        return false;
+
+    return true;
+}
+
+bool update_entry(VaultEntry entry)
+{
+    if (!open_database())
+        return false;
+
+    if (!update_entry(entry))
+        return false;
+
+    if (!close_database())
+        return false;
+
+    return true;
+}
+
+bool delete_entry(char *service)
+{
+    if (!open_database())
+        return false;
+
+    if (!delete_vault_entry(service))
+        return false;
+
+    if (!close_database())
+        return false;
+
+    return true;
+}
+
+VaultEntryList get_all_entries()
+{
+    return get_all_vault_entries();
 }
