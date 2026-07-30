@@ -71,22 +71,22 @@ User -> CLI -> Command Parser -> Auth/Vault/Generator(Business logic) -> CRUD C 
 
 src/
 main.c
-cli.c
-parser.c
+cli.c -> done
+parser.c -> done
 auth.c
 vault.c
-repository.c
-crypto.c
-database.c
+repository.c -> done
+crypto.c -> done
+database. -> done
 include/
-cli.h
-parser.h
+cli.h -> done
+parser.h -> done
 auth.h
 vault.h
-repository.h
-crypto.h
-database.h
-models.h -> data model
+repository.h -> done
+crypto.h -> done
+database.h -> done
+models.h -> data model -> done
 crypton.db
 
 ### db design

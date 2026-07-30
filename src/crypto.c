@@ -19,7 +19,7 @@ void hash_password(const char *password, char *hash)
 // verify password
 bool verify_hash(const char *password, const char *stored_hash)
 {
-    char new_hash[50];
+    char new_hash[100];
 
     hash_password(password, new_hash);
 
