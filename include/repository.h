@@ -13,7 +13,7 @@ bool update_entry(VaultEntry entry);
 
 bool delete_entry(char *service);
 
-VaultEntry get_entry_by_id(int id , VaultEntry *entry);
+VaultEntry get_entry_by_id(int id);
 
 int find_entries_by_service(const char *service, VaultEntry results[], int max_results);
 

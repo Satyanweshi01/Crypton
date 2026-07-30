@@ -86,7 +86,7 @@ vault.h
 repository.h -> done
 crypto.h -> done
 database.h -> done
-models.h -> data model -> done
+model.h -> data model -> done
 crypton.db
 
 ### db design
@@ -194,6 +194,12 @@ int find_entries_by_site(const char \*service, VaultEntryList results);
 
 int get_all_entries(VaultEntryList results);
 
+bool save_metatdata(AppMetadata metadata)
+
+bool load_metadata(AppMetadata *matadata)
+
+bool update_metadata(AppMetadata metadata)
+
 6. database.c
    Responsibility:-
    Manages SQLite database connections.
@@ -256,6 +262,37 @@ typedef struct
 {
 ...
 } AppMetadata;
+
+9. vault.c
+
+ responsibilities:-
+
+ Acts as the business logic layer between the CLI and repository.
+Validates user input before processing.
+Encrypts passwords before storing them.
+Decrypts passwords after retrieving them.
+Calls the Repository layer for CRUD operations.
+Generates secure random passwords.
+Does not perform database operations directly.
+Does not interact with the user interface.
+
+functions:-
+bool vault_add_entry(VaultEntry entry);
+
+bool vault_update_entry(VaultEntry entry);
+
+bool vault_delete_entry(char *service);
+
+bool vault_get_entry(int id, VaultEntry *entry);
+
+int vault_find_entries(const char *service,
+                       VaultEntry results[],
+                       int max_results);
+
+VaultEntryList vault_get_all_entries(void);
+
+void vault_generate_password(char *password, int length);
+
 
 ### Performance
 
