@@ -1,4 +1,7 @@
 
+#ifndef REPOSITORY_H
+#define REPOSITORY_H
+
 // Acts as the data access layer between the application and the database.
 // Performs CRUD (Create, Read, Update, Delete) operations.
 // Converts database records into application models and vice versa.
@@ -18,3 +21,11 @@ VaultEntry get_entry_by_id(int id);
 int find_entries_by_service(const char *service, VaultEntry results[], int max_results);
 
 VaultEntryList get_all_entries(void);
+
+bool save_metadata(AppMetadata metadata);
+
+bool load_metadata(AppMetadata *metadata);
+
+bool update_metadata(AppMetadata metadata);
+
+#endif

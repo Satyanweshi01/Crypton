@@ -40,7 +40,7 @@ bool vault_get_entry(int id, VaultEntry *entry)
     if(entry == NULL)
         return false;
 
-    *entry = get_entry_by_id(id, entry);
+    *entry = get_entry_by_id(id);
 
     if(entry->id <= 0)
         return false;

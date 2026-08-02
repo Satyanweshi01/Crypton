@@ -9,6 +9,7 @@ void read_command(char *buffer);
 void cli_add(void);
 void cli_list(void);
 void cli_get(void);
+void cli_find(void);
 void cli_update(void);
 void cli_delete(void);
 void cli_generate(void);

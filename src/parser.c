@@ -17,6 +17,7 @@ static const Command command_table[] =
 {"add",         cli_add},
 {"list",        cli_list},
 {"get",         cli_get},
+{"find",        cli_find},
 {"update",      cli_update},
 {"delete",      cli_delete},
 {"generate",    cli_generate},
@@ -34,6 +35,12 @@ void parse_command(const char*input)
     {
         printf("Exiting Crypton...\n");
         exit(EXIT_SUCCESS);
+    }
+
+    if(strcmp(input , "help") == 0)
+    {
+        printf("Commands: add, list, get, find, update, delete, generate, help, exit\n");
+        return;
     }
 
     for(size_t i = 0 ; i < COMMAND_COUNT; i++)

@@ -3,6 +3,24 @@
 #include <string.h>
 #include <stdbool.h>
 #include <time.h>
+
+#define ENCRYPTION_PREFIX "ENC:"
+
+static char to_hex(unsigned char value)
+{
+    return (char)(value < 10 ? '0' + value : 'A' + (value - 10));
+}
+
+static int from_hex(char value)
+{
+    if (value >= '0' && value <= '9')
+        return value - '0';
+    if (value >= 'A' && value <= 'F')
+        return value - 'A' + 10;
+    if (value >= 'a' && value <= 'f')
+        return value - 'a' + 10;
+    return -1;
+}
 //  Hash Password
 void hash_password(const char *password, char *hash)
 {
@@ -29,27 +47,70 @@ bool verify_hash(const char *password, const char *stored_hash)
     return false;
 }
 
- // XOR Encryption
+ // XOR encryption stored as printable hex text.
 void encrypt(char *text, const char *key)
 {
-    int i;
-    int keyLength = strlen(key);
+    char encrypted[256];
+    size_t text_length;
+    size_t key_length;
 
-    for (i = 0; text[i] != '\0'; i++)
+    if (!text || !key || key[0] == '\0')
+        return;
+
+    if (strncmp(text, ENCRYPTION_PREFIX, strlen(ENCRYPTION_PREFIX)) == 0)
+        return;
+
+    text_length = strlen(text);
+    key_length = strlen(key);
+
+    if ((text_length * 2) + strlen(ENCRYPTION_PREFIX) >= sizeof(encrypted))
+        return;
+
+    strcpy(encrypted, ENCRYPTION_PREFIX);
+
+    for (size_t i = 0; i < text_length; i++)
     {
-        text[i] = text[i] ^ key[i % keyLength];
+        unsigned char byte = (unsigned char)(text[i] ^ key[i % key_length]);
+        encrypted[strlen(ENCRYPTION_PREFIX) + (i * 2)] = to_hex((byte >> 4) & 0x0F);
+        encrypted[strlen(ENCRYPTION_PREFIX) + (i * 2) + 1] = to_hex(byte & 0x0F);
     }
+
+    encrypted[strlen(ENCRYPTION_PREFIX) + (text_length * 2)] = '\0';
+    strcpy(text, encrypted);
 }
- // XOR Decryption
+ // XOR decryption from printable hex text.
 void decrypt(char *text, const char *key)
 {
-    int i;
-    int keyLength = strlen(key);
+    char decrypted[256];
+    size_t prefix_length = strlen(ENCRYPTION_PREFIX);
+    size_t encoded_length;
+    size_t key_length;
 
-    for (i = 0; text[i] != '\0'; i++)
+    if (!text || !key || key[0] == '\0')
+        return;
+
+    if (strncmp(text, ENCRYPTION_PREFIX, prefix_length) != 0)
+        return;
+
+    encoded_length = strlen(text + prefix_length);
+    key_length = strlen(key);
+
+    if (encoded_length % 2 != 0 || encoded_length / 2 >= sizeof(decrypted))
+        return;
+
+    for (size_t i = 0; i < encoded_length / 2; i++)
     {
-        text[i] = text[i] ^ key[i % keyLength];
+        int high = from_hex(text[prefix_length + (i * 2)]);
+        int low = from_hex(text[prefix_length + (i * 2) + 1]);
+
+        if (high < 0 || low < 0)
+            return;
+
+        decrypted[i] = (char)(((high << 4) | low) ^ key[i % key_length]);
     }
+
+    decrypted[encoded_length / 2] = '\0';
+    strcpy(text, decrypted);
 }
   //Generate Random Password
 void generate_random_password(char *password, int length)

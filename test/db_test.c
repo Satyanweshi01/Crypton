@@ -8,9 +8,9 @@ int main()
     if (!create_table())
         return 1;
 
-    VaultEntry test = {1, "GitHub", "user", "pass", "notes", {27, 7, 2026}, {27, 7, 2026}};
+    VaultEntry test = {1, "GitHub", "user", "pass", "notes", {2026, 7, 27, 0, 0, 0}, {2026, 7, 27, 0, 0, 0}};
     add_vault_entry(test);
-    VaultEntry test1 = {2, "Instagram", "user", "suor", "another notes", {20, 7, 2026}, {20, 7, 2026}};
+    VaultEntry test1 = {2, "Instagram", "user", "suor", "another notes", {2026, 7, 20, 0, 0, 0}, {2026, 7, 20, 0, 0, 0}};
     add_vault_entry(test1);
 
     VaultEntryList list = get_all_vault_entries();
@@ -33,8 +33,6 @@ int main()
     }
 
     printf("Retrieved %d entries\n", list.count);
-
-    VaultEntry test2;
 
     close_database();
 
