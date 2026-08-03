@@ -2,6 +2,7 @@
 #include "../include/crypto.h"
 #include "../include/model.h"
 #include "../include/repository.h"
+#include "../include/cli.h"
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
@@ -58,7 +59,7 @@ void setup_vault(void)
     while (1)
     {
         read_auth_input("New master password: ", password, sizeof(password));
-        read_auth_input("Confirm master password: ", confirm_password, sizeof(confirm_password));
+        secured_read("Confirm master password: ", confirm_password, sizeof(confirm_password));
 
         if (password[0] == '\0')
         {
@@ -90,6 +91,8 @@ void setup_vault(void)
     metadata.created_at = current_date_time();
     metadata.updated_at = metadata.created_at;
 
+    cli_clear();
+
     if (save_metadata(metadata))
         printf("Vault setup complete.\n");
     else
@@ -102,7 +105,9 @@ bool login(void)
 
     for (int attempt = 1; attempt <= 3; attempt++)
     {
-        read_auth_input("Master password: ", password, sizeof(password));
+        secured_read("Master password: ", password, sizeof(password));
+
+        cli_clear();
 
         if (verify_master_password(password))
         {

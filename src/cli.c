@@ -6,8 +6,16 @@
 #include "../include/cli.h"
 #include "../include/parser.h"
 #include "../include/vault.h"
-#define  MAX_COMMAND_LENGTH 100
+#define MAX_COMMAND_LENGTH 100
 #define MAX_RESULTS 50
+
+// Detect OS
+#if defined(_WIN32) || defined(_WIN64)
+#define PLATFORM_WINDOWS 1
+#include <conio.h>
+#else
+#define PLATFORM_WINDOWS 0
+#endif
 
 static void read_field(const char *prompt, char *buffer, size_t size)
 {
@@ -20,6 +28,65 @@ static void read_field(const char *prompt, char *buffer, size_t size)
     }
 
     buffer[strcspn(buffer, "\n")] = '\0';
+}
+
+void secured_read(const char *prompt, char *buffer, size_t size)
+{
+    printf("%s", prompt);
+    fflush(stdout);
+
+    // Enter Raw/No-Echo Mode if Unix
+    if (!PLATFORM_WINDOWS)
+    {
+        system("stty -icanon -echo");
+    }
+
+    size_t i = 0;
+    int ch;
+
+    while (i < size - 1)
+    {
+        if (PLATFORM_WINDOWS)
+        {
+            ch = _getch(); // Windows specific raw char fetch
+        }
+        else
+        {
+            ch = getchar(); // Unix raw char fetch
+        }
+
+        // (Windows -> \r | Unix -> \n)
+        if (ch == '\n' || ch == '\r' || ch == EOF)
+        {
+            break;
+        }
+
+        // Handle Backspace
+        if (ch == 127 || ch == '\b')
+        {
+            if (i > 0)
+            {
+                i--;
+                printf("\b \b");
+                fflush(stdout);
+            }
+            continue;
+        }
+
+        buffer[i++] = (char)ch;
+        printf("#");
+        fflush(stdout);
+    }
+
+    buffer[i] = '\0';
+
+    // Restore terminal mode
+    if (!PLATFORM_WINDOWS)
+    {
+        system("stty sane");
+    }
+
+    printf("\n");
 }
 
 static int read_int_field(const char *prompt)
@@ -79,25 +146,26 @@ static bool copy_to_clipboard(const char *text)
     return false;
 #endif
 }
+
 void show_welcome(void)
 {
-    printf("******************************************\n");
-    printf("               CRYPTON\n");
-    printf("******************************************\n");
-    printf("Secure Password Management System\n\n");
+    printf("+----------------------------------------+\n");
+    printf("|                 CRYPTON                |\n");
+    printf("+----------------------------------------+\n");
+    printf("     Secure Password Management System\n\n");
 }
 
 void show_shell(void)
 {
-    printf("Crypton> ");
+    printf("\nCrypton> ");
 }
 
 void read_command(char *buffer)
 {
-   if(fgets(buffer , MAX_COMMAND_LENGTH, stdin) != NULL)
-   {
-    buffer[strcspn(buffer , "\n")] = '\0';
-   }
+    if (fgets(buffer, MAX_COMMAND_LENGTH, stdin) != NULL)
+    {
+        buffer[strcspn(buffer, "\n")] = '\0';
+    }
 }
 void start_cli(void)
 {
@@ -119,9 +187,9 @@ void start_cli(void)
         show_shell();
         read_command(command);
 
-        if(command[0] == '\0')
-          continue;
-        
+        if (command[0] == '\0')
+            continue;
+
         parse_command(command);
     }
 }
@@ -244,4 +312,16 @@ void cli_generate(void)
 
     vault_generate_password(password, length);
     printf("Generated password: %s\n", password);
+}
+
+void cli_clear(void)
+{
+    if (PLATFORM_WINDOWS)
+    {
+        system("cls");
+    }
+    else
+    {
+        system("clear");
+    }
 }
