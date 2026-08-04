@@ -1,3 +1,11 @@
+### Build command (from root dir)
+
+#### Windows
+
+```bash
+gcc -Wall -Wextra -I.\include .\src\main.c .\src\database.c .\src\auth.c .\src\cli.c .\src\crypto.c .\src\parser.c .\src\respository.c .\src\vault.c .\src\logger.c ./lib/libsqlite3.a -o crypto
+```
+
 ### Tasks
 
 - [x] database -> rupak
@@ -196,7 +204,7 @@ int get_all_entries(VaultEntryList results);
 
 bool save_metatdata(AppMetadata metadata)
 
-bool load_metadata(AppMetadata *matadata)
+bool load_metadata(AppMetadata \*matadata)
 
 bool update_metadata(AppMetadata metadata)
 
@@ -265,9 +273,9 @@ typedef struct
 
 9. vault.c
 
- responsibilities:-
+responsibilities:-
 
- Acts as the business logic layer between the CLI and repository.
+Acts as the business logic layer between the CLI and repository.
 Validates user input before processing.
 Encrypts passwords before storing them.
 Decrypts passwords after retrieving them.
@@ -281,18 +289,17 @@ bool vault_add_entry(VaultEntry entry);
 
 bool vault_update_entry(VaultEntry entry);
 
-bool vault_delete_entry(char *service);
+bool vault_delete_entry(char \*service);
 
-bool vault_get_entry(int id, VaultEntry *entry);
+bool vault_get_entry(int id, VaultEntry \*entry);
 
-int vault_find_entries(const char *service,
-                       VaultEntry results[],
-                       int max_results);
+int vault_find_entries(const char \*service,
+VaultEntry results[],
+int max_results);
 
 VaultEntryList vault_get_all_entries(void);
 
-void vault_generate_password(char *password, int length);
-
+void vault_generate_password(char \*password, int length);
 
 ### Performance
 
