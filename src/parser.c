@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include "../include/parser.h"
 #include "../include/cli.h"
+#include "../include/logger.h"
 
 typedef void (*CommandHandler)(void);
 
@@ -34,6 +36,7 @@ void parse_command(const char *input)
     if (strcmp(input, "exit") == 0)
     {
         printf("Exiting Crypton...\n");
+        log_msg("-----------Crypton Closed-----------");
         cli_clear();
         exit(EXIT_SUCCESS);
     }

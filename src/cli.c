@@ -2,10 +2,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+
 #include "../include/auth.h"
 #include "../include/cli.h"
 #include "../include/parser.h"
 #include "../include/vault.h"
+#include "../include/logger.h"
+
 #define MAX_COMMAND_LENGTH 100
 #define MAX_RESULTS 50
 
@@ -171,6 +174,8 @@ void start_cli(void)
 {
     char command[MAX_COMMAND_LENGTH];
 
+    log_msg("-----------Crypton Opened-----------");
+
     show_welcome();
 
     if (!vault_exists())
@@ -179,6 +184,8 @@ void start_cli(void)
     if (!login())
     {
         printf("Authentication failed. Exiting Crypton...\n");
+        log_msg("-----------Crypton Closed-----------");
+
         return;
     }
 
@@ -192,6 +199,8 @@ void start_cli(void)
 
         parse_command(command);
     }
+
+    log_msg("-----------Crypton Closed-----------");
 }
 
 void cli_add(void)

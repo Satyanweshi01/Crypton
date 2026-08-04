@@ -1,10 +1,13 @@
 #include "../include/model.h"
 #include "../include/database.h"
 #include "../include/sqlite3.h"
+#include "../include/logger.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+
 #ifdef _WIN32
 #include <direct.h>
 #include <windows.h>
@@ -14,6 +17,7 @@
 
 #define MAX_QUERY_LENGTH 1024
 #define DATABASE_PATH_SIZE 1024
+#define MAX_LOG_LENGTH 2048
 
 // Global Storage
 sqlite3 *db;
@@ -66,20 +70,21 @@ static int callback(void *NotUsed, int argc, char **argv, char **azColName)
 int open_database()
 {
     char database_path[DATABASE_PATH_SIZE];
-
-    printf("SQLite version: %s\n", sqlite3_libversion());
+    char logMSG[MAX_LOG_LENGTH];
 
     get_database_path(database_path, sizeof(database_path));
     rc = sqlite3_open(database_path, &db);
 
     if (rc != SQLITE_OK)
     {
-        fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
+        snprintf(logMSG, sizeof(logMSG), "ERROR:  Can't open database: %s", sqlite3_errmsg(db));
+        log_msg(logMSG);
         return 0;
     }
     else
     {
-        fprintf(stderr, "Opened database successfully\n");
+        snprintf(logMSG, sizeof(logMSG), "INFO:   Opened database successfully");
+        log_msg(logMSG);
     }
 
     return 1;
@@ -88,14 +93,18 @@ int open_database()
 // Close the database connection
 int close_database()
 {
+    char logMSG[MAX_LOG_LENGTH];
+
     if (sqlite3_close(db) != SQLITE_OK)
     {
-        fprintf(stderr, "Can't close database: %s\n", sqlite3_errmsg(db));
+        snprintf(logMSG, sizeof(logMSG), "ERROR:  Can't close database: %s", sqlite3_errmsg(db));
+        log_msg(logMSG);
         return 0;
     }
     else
     {
-        fprintf(stderr, "Closed database successfully\n");
+        snprintf(logMSG, sizeof(logMSG), "INFO:   Closed database successfully");
+        log_msg(logMSG);
         return 1;
     }
 }
@@ -103,6 +112,8 @@ int close_database()
 // Create vault_entries and metadata tables
 int create_table()
 {
+    char logMSG[MAX_LOG_LENGTH];
+
     const char *vault_query =
         "CREATE TABLE IF NOT EXISTS vault_entries ("
         "id INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -135,8 +146,10 @@ int create_table()
 
     if (rc != SQLITE_OK)
     {
-        fprintf(stderr, "SQL error: %s\n", errMSG);
+        snprintf(logMSG, sizeof(logMSG), "ERROR:  SQL error: %s", errMSG);
+        log_msg(logMSG);
         sqlite3_free(errMSG);
+
         return 0;
     }
 
@@ -144,12 +157,16 @@ int create_table()
 
     if (rc != SQLITE_OK)
     {
-        fprintf(stderr, "SQL error: %s\n", errMSG);
+        snprintf(logMSG, sizeof(logMSG), "ERROR:  SQL error: %s", errMSG);
+        log_msg(logMSG);
         sqlite3_free(errMSG);
+
         return 0;
     }
 
-    fprintf(stdout, "Tables created successfully\n");
+    snprintf(logMSG, sizeof(logMSG), "INFO:   Tables created successfully");
+    log_msg(logMSG);
+
     return 1;
 }
 
@@ -157,6 +174,7 @@ int create_table()
 int add_vault_entry(VaultEntry entry)
 {
     char query[MAX_QUERY_LENGTH];
+    char logMSG[MAX_LOG_LENGTH];
 
     const char *fmt =
         "INSERT INTO vault_entries "
@@ -185,13 +203,17 @@ int add_vault_entry(VaultEntry entry)
 
     if (rc != SQLITE_OK)
     {
-        fprintf(stderr, "SQL error: %s\n", errMSG);
+        snprintf(logMSG, sizeof(logMSG), "ERROR:  SQL error: %s", errMSG);
+        log_msg(logMSG);
         sqlite3_free(errMSG);
+
         return 0;
     }
     else
     {
-        fprintf(stdout, "Entry added successfully\n");
+        snprintf(logMSG, sizeof(logMSG), "INFO:   Entry added successfully");
+        log_msg(logMSG);
+
         return 1;
     }
 }
@@ -200,6 +222,7 @@ int add_vault_entry(VaultEntry entry)
 int update_vault_entry(VaultEntry entry)
 {
     char query[MAX_QUERY_LENGTH];
+    char logMSG[MAX_LOG_LENGTH];
 
     const char *fmt = "UPDATE vault_entries "
                       "SET service = '%s', username = '%s', password = '%s', notes = '%s', "
@@ -230,13 +253,17 @@ int update_vault_entry(VaultEntry entry)
 
     if (rc != SQLITE_OK)
     {
-        fprintf(stderr, "SQL error: %s\n", errMSG);
+        snprintf(logMSG, sizeof(logMSG), "ERROR:  SQL error: %s", errMSG);
+        log_msg(logMSG);
         sqlite3_free(errMSG);
+
         return 0;
     }
     else
     {
-        fprintf(stdout, "Entry updated successfully\n");
+        snprintf(logMSG, sizeof(logMSG), "INFO:   Entry updated successfully");
+        log_msg(logMSG);
+
         return 1;
     }
 }
@@ -245,6 +272,7 @@ int update_vault_entry(VaultEntry entry)
 int delete_vault_entry(char *service)
 {
     char query[MAX_QUERY_LENGTH];
+    char logMSG[MAX_LOG_LENGTH];
 
     const char *fmt = "DELETE FROM vault_entries "
                       "WHERE service = '%s';";
@@ -255,13 +283,17 @@ int delete_vault_entry(char *service)
 
     if (rc != SQLITE_OK)
     {
-        fprintf(stderr, "SQL error: %s\n", errMSG);
+        snprintf(logMSG, sizeof(logMSG), "ERROR:  SQL error: %s", errMSG);
+        log_msg(logMSG);
         sqlite3_free(errMSG);
+
         return 0;
     }
     else
     {
-        fprintf(stdout, "Entry deleted successfully\n");
+        snprintf(logMSG, sizeof(logMSG), "INFO:   Entry deleted successfully");
+        log_msg(logMSG);
+
         return 1;
     }
 }
@@ -284,6 +316,8 @@ static void safe_column_text(sqlite3_stmt *stmt, int col, char *dest, size_t des
 VaultEntryList get_all_vault_entries()
 {
     VaultEntryList entryList;
+    char logMSG[MAX_LOG_LENGTH];
+
     entryList.items = NULL;
     entryList.count = 0;
 
@@ -294,7 +328,9 @@ VaultEntryList get_all_vault_entries()
 
     if (rc != SQLITE_OK)
     {
-        fprintf(stderr, "Failed to fetch data: %s\n", sqlite3_errmsg(db));
+        snprintf(logMSG, sizeof(logMSG), "ERROR:  Failed to fetch data: %s", sqlite3_errmsg(db));
+        log_msg(logMSG);
+
         return entryList;
     }
 
@@ -304,7 +340,9 @@ VaultEntryList get_all_vault_entries()
         VaultEntry *temp = realloc(entryList.items, (entryList.count + 1) * sizeof(VaultEntry));
         if (!temp)
         {
-            fprintf(stderr, "Memory allocation error during vault entry fetch\n");
+            snprintf(logMSG, sizeof(logMSG), "ERROR:  Memory allocation error during vault entry fetch");
+            log_msg(logMSG);
+
             break;
         }
         entryList.items = temp;
@@ -343,13 +381,20 @@ VaultEntryList get_all_vault_entries()
 VaultEntry get_vault_entry_by_id(int id)
 {
     VaultEntry result = {0};
+    char logMSG[MAX_LOG_LENGTH];
 
     sqlite3_stmt *stmt;
     const char *query = "SELECT id, service, username, password, notes, updated_at, created_at "
                         "FROM vault_entries WHERE id = ?;";
 
     rc = sqlite3_prepare_v2(db, query, -1, &stmt, NULL);
-    if (rc != SQLITE_OK) return result;
+    if (rc != SQLITE_OK)
+    {
+        snprintf(logMSG, sizeof(logMSG), "ERROR:  Error during fetching vault entry");
+        log_msg(logMSG);
+
+        return result;
+    }
 
     sqlite3_bind_int(stmt, 1, id);
 
@@ -387,14 +432,24 @@ VaultEntry get_vault_entry_by_id(int id)
 // Search entries matching service substring into caller-allocated array
 int find_vault_entries_by_service(const char *service, VaultEntry results[], int max_results)
 {
-    if (!service || !results || max_results <= 0) return 0;
+    char logMSG[MAX_LOG_LENGTH];
+
+    if (!service || !results || max_results <= 0)
+        return 0;
 
     sqlite3_stmt *stmt;
     const char *query = "SELECT id, service, username, password, notes, updated_at, created_at "
                         "FROM vault_entries WHERE service LIKE ?;";
 
     rc = sqlite3_prepare_v2(db, query, -1, &stmt, NULL);
-    if (rc != SQLITE_OK) return 0;
+
+    if (rc != SQLITE_OK)
+    {
+        snprintf(logMSG, sizeof(logMSG), "ERROR:  Error during fetching vault entry");
+        log_msg(logMSG);
+
+        return 0;
+    }
 
     char search_pattern[MAX_QUERY_LENGTH];
     snprintf(search_pattern, sizeof(search_pattern), "%%%s%%", service);
@@ -438,6 +493,7 @@ int find_vault_entries_by_service(const char *service, VaultEntry results[], int
 bool db_save_metadata(AppMetadata metadata)
 {
     sqlite3_stmt *stmt;
+    char logMSG[MAX_LOG_LENGTH];
 
     const char *query =
         "INSERT OR REPLACE INTO metadata "
@@ -449,7 +505,12 @@ bool db_save_metadata(AppMetadata metadata)
     rc = sqlite3_prepare_v2(db, query, -1, &stmt, NULL);
 
     if (rc != SQLITE_OK)
+    {
+        snprintf(logMSG, sizeof(logMSG), "INFO:   Saved metadata successfully");
+        log_msg(logMSG);
+
         return false;
+    }
 
     sqlite3_bind_text(stmt, 1, metadata.master_password_hash, -1, SQLITE_STATIC);
     sqlite3_bind_text(stmt, 2, metadata.recovery_key_hash, -1, SQLITE_STATIC);
@@ -477,7 +538,8 @@ bool db_save_metadata(AppMetadata metadata)
 // Load metadata into caller-provided struct
 bool db_load_metadata(AppMetadata *metadata)
 {
-    if (!metadata) return false;
+    if (!metadata)
+        return false;
 
     sqlite3_stmt *stmt;
 
@@ -497,17 +559,17 @@ bool db_load_metadata(AppMetadata *metadata)
         safe_column_text(stmt, 0, metadata->master_password_hash, sizeof(metadata->master_password_hash));
         safe_column_text(stmt, 1, metadata->recovery_key_hash, sizeof(metadata->recovery_key_hash));
 
-        metadata->updated_at.year   = sqlite3_column_int(stmt, 2);
-        metadata->updated_at.month  = sqlite3_column_int(stmt, 3);
-        metadata->updated_at.day    = sqlite3_column_int(stmt, 4);
-        metadata->updated_at.hour   = sqlite3_column_int(stmt, 5);
+        metadata->updated_at.year = sqlite3_column_int(stmt, 2);
+        metadata->updated_at.month = sqlite3_column_int(stmt, 3);
+        metadata->updated_at.day = sqlite3_column_int(stmt, 4);
+        metadata->updated_at.hour = sqlite3_column_int(stmt, 5);
         metadata->updated_at.minute = sqlite3_column_int(stmt, 6);
         metadata->updated_at.second = sqlite3_column_int(stmt, 7);
 
-        metadata->created_at.year   = sqlite3_column_int(stmt, 8);
-        metadata->created_at.month  = sqlite3_column_int(stmt, 9);
-        metadata->created_at.day    = sqlite3_column_int(stmt, 10);
-        metadata->created_at.hour   = sqlite3_column_int(stmt, 11);
+        metadata->created_at.year = sqlite3_column_int(stmt, 8);
+        metadata->created_at.month = sqlite3_column_int(stmt, 9);
+        metadata->created_at.day = sqlite3_column_int(stmt, 10);
+        metadata->created_at.hour = sqlite3_column_int(stmt, 11);
         metadata->created_at.minute = sqlite3_column_int(stmt, 12);
         metadata->created_at.second = sqlite3_column_int(stmt, 13);
 
