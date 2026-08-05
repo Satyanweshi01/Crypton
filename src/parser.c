@@ -14,6 +14,7 @@ typedef struct
     CommandHandler handler;
 } Command;
 
+// Command table mapping command strings to their respective handler functions
 static const Command command_table[] =
     {
         {"add", cli_add},
@@ -28,7 +29,6 @@ static const Command command_table[] =
 #define COMMAND_COUNT (sizeof(command_table) / sizeof(command_table[0]))
 
 void parse_command(const char *input)
-
 {
     if (input == NULL)
         return;

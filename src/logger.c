@@ -13,6 +13,7 @@
 #define LOGGER_PATH_SIZE 1024
 #define MAX_PREFIX_SIZE 32
 
+// Get the logger path based on the operating system
 static void get_logger_path(char *path, size_t path_size)
 {
 #ifdef _WIN32
@@ -42,6 +43,7 @@ static void get_logger_path(char *path, size_t path_size)
 #endif
 }
 
+// Get the current date and time
 static date current_date_time(void)
 {
     time_t now = time(NULL);
@@ -61,7 +63,6 @@ static date current_date_time(void)
     return result;
 }
 
-// logs information
 void log_msg(char *msg)
 {
     char loggerPath[LOGGER_PATH_SIZE];

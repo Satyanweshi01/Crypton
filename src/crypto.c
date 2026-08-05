@@ -1,3 +1,5 @@
+#include "../include/crypto.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,11 +8,13 @@
 
 #define ENCRYPTION_PREFIX "ENC:"
 
+// Convert a byte to its hexadecimal representation.
 static char to_hex(unsigned char value)
 {
     return (char)(value < 10 ? '0' + value : 'A' + (value - 10));
 }
 
+// Convert a hexadecimal character to its integer value.
 static int from_hex(char value)
 {
     if (value >= '0' && value <= '9')
@@ -21,7 +25,7 @@ static int from_hex(char value)
         return value - 'a' + 10;
     return -1;
 }
-//  Hash Password
+
 void hash_password(const char *password, char *hash)
 {
     unsigned long value = 5381;
@@ -34,7 +38,7 @@ void hash_password(const char *password, char *hash)
 
     sprintf(hash, "%lu", value);
 }
-// verify password
+
 bool verify_hash(const char *password, const char *stored_hash)
 {
     char new_hash[100];
@@ -47,7 +51,6 @@ bool verify_hash(const char *password, const char *stored_hash)
     return false;
 }
 
- // XOR encryption stored as printable hex text.
 void encrypt(char *text, const char *key)
 {
     char encrypted[256];
@@ -78,7 +81,7 @@ void encrypt(char *text, const char *key)
     encrypted[strlen(ENCRYPTION_PREFIX) + (text_length * 2)] = '\0';
     strcpy(text, encrypted);
 }
- // XOR decryption from printable hex text.
+
 void decrypt(char *text, const char *key)
 {
     char decrypted[256];
@@ -112,7 +115,7 @@ void decrypt(char *text, const char *key)
     decrypted[encoded_length / 2] = '\0';
     strcpy(text, decrypted);
 }
-  //Generate Random Password
+
 void generate_random_password(char *password, int length)
 {
     const char characters[] =

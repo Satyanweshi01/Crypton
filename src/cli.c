@@ -20,6 +20,7 @@
 #define PLATFORM_WINDOWS 0
 #endif
 
+// Reads user input for authentication purposes.
 static void read_field(const char *prompt, char *buffer, size_t size)
 {
     printf("%s", prompt);
@@ -92,6 +93,7 @@ void secured_read(const char *prompt, char *buffer, size_t size)
     printf("\n");
 }
 
+// Reads an integer field from the user.
 static int read_int_field(const char *prompt)
 {
     char buffer[32];
@@ -99,6 +101,7 @@ static int read_int_field(const char *prompt)
     return atoi(buffer);
 }
 
+// Gets the current date and time.
 static date current_date_time(void)
 {
     time_t now = time(NULL);
@@ -118,6 +121,7 @@ static date current_date_time(void)
     return result;
 }
 
+// Prints the details of a VaultEntry to the console.
 static void print_entry(const VaultEntry *entry)
 {
     printf("ID: %d\n", entry->id);
@@ -134,6 +138,7 @@ static void print_entry(const VaultEntry *entry)
            entry->updated_at.second);
 }
 
+// Copies the provided text to the system clipboard.
 static bool copy_to_clipboard(const char *text)
 {
 #ifdef _WIN32
@@ -170,6 +175,7 @@ void read_command(char *buffer)
         buffer[strcspn(buffer, "\n")] = '\0';
     }
 }
+
 void start_cli(void)
 {
     char command[MAX_COMMAND_LENGTH];

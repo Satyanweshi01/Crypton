@@ -3,12 +3,16 @@
 #include "../include/model.h"
 #include "../include/repository.h"
 #include "../include/cli.h"
+
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
 
 #define AUTH_INPUT_SIZE 128
 
+// Reads user input for authentication purposes.
+// It displays a prompt and reads a line of input from stdin, storing it in the provided buffer.
+// If the input is empty or an error occurs, it sets the first character of the buffer to '\0'.
 static void read_auth_input(const char *prompt, char *buffer, size_t size)
 {
     printf("%s", prompt);
@@ -22,6 +26,7 @@ static void read_auth_input(const char *prompt, char *buffer, size_t size)
     buffer[strcspn(buffer, "\n")] = '\0';
 }
 
+// Retrieves the current date and time, returning it as a date structure.
 static date current_date_time(void)
 {
     time_t now = time(NULL);

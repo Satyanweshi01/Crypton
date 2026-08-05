@@ -1,7 +1,8 @@
-#include <string.h>
 #include "vault.h"
 #include "repository.h"
 #include "crypto.h"
+
+#include <string.h>
 
 #define VAULT_KEY "crypton"
 
@@ -65,7 +66,6 @@ int vault_find_entries(const char *service,
 }
 
 VaultEntryList vault_get_all_entries(void)
-
 {
     VaultEntryList list = get_all_entries();
 
@@ -76,10 +76,7 @@ VaultEntryList vault_get_all_entries(void)
     return list;
 }
 
-void vault_generate_password(char *password,
-                             int length)
-
+void vault_generate_password(char *password, int length)
 {
-    generate_random_password(password,
-                             length);
+    generate_random_password(password, length);
 }

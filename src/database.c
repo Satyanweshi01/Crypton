@@ -8,6 +8,7 @@
 #include <stdbool.h>
 #include <string.h>
 
+// Platform-specific includes for directory creation
 #ifdef _WIN32
 #include <direct.h>
 #include <windows.h>
@@ -19,11 +20,11 @@
 #define DATABASE_PATH_SIZE 1024
 #define MAX_LOG_LENGTH 2048
 
-// Global Storage
 sqlite3 *db;
 char *errMSG = 0;
-int rc; // return code
+int rc; // rc -> return code
 
+// Function to get the database path based on the OS.
 static void get_database_path(char *path, size_t path_size)
 {
 #ifdef _WIN32
@@ -53,7 +54,7 @@ static void get_database_path(char *path, size_t path_size)
 #endif
 }
 
-// Callback function for SQLite queries
+// Callback function for SQLite queries (used for logging purposes)
 static int callback(void *NotUsed, int argc, char **argv, char **azColName)
 {
     (void)NotUsed;
@@ -66,7 +67,6 @@ static int callback(void *NotUsed, int argc, char **argv, char **azColName)
     return 0;
 }
 
-// Open the database connection
 int open_database()
 {
     char database_path[DATABASE_PATH_SIZE];
@@ -90,7 +90,6 @@ int open_database()
     return 1;
 }
 
-// Close the database connection
 int close_database()
 {
     char logMSG[MAX_LOG_LENGTH];
@@ -109,7 +108,6 @@ int close_database()
     }
 }
 
-// Create vault_entries and metadata tables
 int create_table()
 {
     char logMSG[MAX_LOG_LENGTH];
@@ -170,7 +168,6 @@ int create_table()
     return 1;
 }
 
-// Add a new entry to vault_entries (Auto-increment ID, full date/time format)
 int add_vault_entry(VaultEntry entry)
 {
     char query[MAX_QUERY_LENGTH];
@@ -218,7 +215,6 @@ int add_vault_entry(VaultEntry entry)
     }
 }
 
-// Update existing entry matching service name
 int update_vault_entry(VaultEntry entry)
 {
     char query[MAX_QUERY_LENGTH];
@@ -268,7 +264,6 @@ int update_vault_entry(VaultEntry entry)
     }
 }
 
-// Delete entry by service name
 int delete_vault_entry(char *service)
 {
     char query[MAX_QUERY_LENGTH];
@@ -298,7 +293,7 @@ int delete_vault_entry(char *service)
     }
 }
 
-// Safe string copy helper for SQLite column results
+// Helper function to safely retrieve text from a SQLite column
 static void safe_column_text(sqlite3_stmt *stmt, int col, char *dest, size_t dest_size)
 {
     const unsigned char *txt = sqlite3_column_text(stmt, col);
@@ -312,7 +307,6 @@ static void safe_column_text(sqlite3_stmt *stmt, int col, char *dest, size_t des
     }
 }
 
-// Retrieve all entries from vault_entries table safely
 VaultEntryList get_all_vault_entries()
 {
     VaultEntryList entryList;
@@ -377,7 +371,6 @@ VaultEntryList get_all_vault_entries()
     return entryList;
 }
 
-// Retrieve single entry by ID
 VaultEntry get_vault_entry_by_id(int id)
 {
     VaultEntry result = {0};
@@ -429,7 +422,6 @@ VaultEntry get_vault_entry_by_id(int id)
     return result;
 }
 
-// Search entries matching service substring into caller-allocated array
 int find_vault_entries_by_service(const char *service, VaultEntry results[], int max_results)
 {
     char logMSG[MAX_LOG_LENGTH];
@@ -489,7 +481,6 @@ int find_vault_entries_by_service(const char *service, VaultEntry results[], int
     return count;
 }
 
-// Insert metadata with discrete integer date/time fields
 bool db_save_metadata(AppMetadata metadata)
 {
     sqlite3_stmt *stmt;
@@ -535,7 +526,6 @@ bool db_save_metadata(AppMetadata metadata)
     return rc == SQLITE_DONE;
 }
 
-// Load metadata into caller-provided struct
 bool db_load_metadata(AppMetadata *metadata)
 {
     if (!metadata)
@@ -581,7 +571,6 @@ bool db_load_metadata(AppMetadata *metadata)
     return false;
 }
 
-// Update existing metadata row
 bool db_update_metadata(AppMetadata metadata)
 {
     sqlite3_stmt *stmt;

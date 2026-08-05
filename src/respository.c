@@ -1,9 +1,10 @@
-#include <stdbool.h>
-#include <stdio.h>
 #include "../include/sqlite3.h"
 #include "../include/repository.h"
 #include "../include/model.h"
 #include "../include/database.h"
+
+#include <stdbool.h>
+#include <stdio.h>
 
 bool save_entry(VaultEntry entry)
 {
